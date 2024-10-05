@@ -1,5 +1,6 @@
+// app.js
 const express = require('express');
-const bodyParser = require('body-parser'); // Middleware for parsing form data
+const bodyParser = require('body-parser'); // For parsing form data
 const app = express();
 const PORT = process.env.PORT || 3000;
 
