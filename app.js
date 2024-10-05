@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); // For parsing form data
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -23,13 +23,22 @@ app.post('/signup', (req, res) => {
     res.redirect(`/${username}`); // Redirect to the user's profile or homepage
 });
 
-// Route for user profiles (dynamic)
-app.get('/:username', (req, res) => {
-    const username = req.params.username; // Get username from URL
-    res.send(`
-        <h1>Welcome to ${username}'s Profile</h1>
-        <p>This is where you can customize your profile, view badges, and more!</p>
-    `);
+// Dynamic route for user profiles and homepage
+app.get('*', (req, res) => {
+    const host = req.headers.host; // e.g., username.skullz.lol
+    const subdomain = host.split('.')[0]; // Extract the subdomain
+    if (subdomain !== 'www' && subdomain !== 'skullz') { // Adjust as necessary
+        // Serve the user's profile
+        res.send(`
+            <h1>Welcome to ${subdomain}'s Profile</h1>
+            <p>This is where you can customize your profile, view badges, and more!</p>
+        `);
+    } else {
+        res.send(`
+            <h1>Welcome to Skullz.lol!</h1>
+            <p>Your one-stop site for all things skullz!</p>
+        `);
+    }
 });
 
 // Start the server
