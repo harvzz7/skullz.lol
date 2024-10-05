@@ -1,43 +1,39 @@
 const express = require('express');
+const bodyParser = require('body-parser'); // Middleware for parsing form data
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to handle dynamic subdomains
-app.use((req, res, next) => {
-    const host = req.headers.host; // Get the host from the request
-    const subdomain = host.split('.')[0]; // Extract the subdomain
-    req.subdomain = subdomain; // Store the subdomain in the request object
-    next();
-});
+// Middleware to parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files (like your HTML pages)
-app.use(express.static('public')); // Assume your HTML files are in a 'public' folder
+// Serve static files from the "public" directory
+app.use(express.static('public'));
 
-// Route for the user profile
-app.get('/', async (req, res) => {
-    const username = req.subdomain; // Get the username from the subdomain
-    const userProfile = await getUserProfile(username); // Fetch user profile from your database
-    if (userProfile) {
-        res.send(`
-            <h1>${userProfile.username}'s Profile</h1>
-            <p>Badges: ${userProfile.badges.join(', ')}</p>
-            <p>Links: ${userProfile.socialLinks.join(', ')}</p>
-            <!-- Additional profile data -->
-        `);
-    } else {
-        res.status(404).send('Profile not found');
+// Route to handle signup form submission
+app.post('/signup', (req, res) => {
+    const { username, password, confirmPassword } = req.body;
+
+    // Simple validation (you can implement more robust checks)
+    if (password !== confirmPassword) {
+        return res.status(400).send("Passwords do not match."); // Show an error if passwords don't match
     }
+
+    // Here, you would typically save the user to your database
+    // For demonstration, we just redirect to the user's profile page
+    res.redirect(`/${username}`); // Redirect to the user's profile or homepage
 });
 
-// Simulated function for fetching user profiles (replace with actual DB logic)
-async function getUserProfile(username) {
-    const users = {
-        'john': { username: 'john', badges: ['Badge1', 'Badge2'], socialLinks: ['Twitter', 'Instagram'] },
-        'jane': { username: 'jane', badges: ['Badge3'], socialLinks: ['Facebook', 'LinkedIn'] }
-    };
-    return users[username] || null;
-}
+// Route for user profiles (dynamic)
+app.get('/:username', (req, res) => {
+    const username = req.params.username; // Get username from URL
+    res.send(`
+        <h1>Welcome to ${username}'s Profile</h1>
+        <p>This is where you can customize your profile, view badges, and more!</p>
+        <!-- Additional profile data can be displayed here -->
+    `);
+});
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
