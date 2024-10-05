@@ -21,7 +21,7 @@
             font-size: 1.5em;
             margin-top: 20px;
         }
-        .links {
+        .links, .homepage-links {
             margin-top: 30px;
         }
         a, button {
@@ -65,6 +65,15 @@
             const formContainer = document.getElementById('formContainer');
             formContainer.style.display = formContainer.style.display === 'none' || formContainer.style.display === '' ? 'block' : 'none';
         }
+
+        function login() {
+            // Get username (replace this with proper authentication later)
+            const username = document.getElementById('username').value;
+            // Redirect to the homepage
+            if (username) {
+                window.location.href = `homepage.html?username=${encodeURIComponent(username)}`;
+            }
+        }
     </script>
 </head>
 <body>
@@ -77,8 +86,8 @@
 
     <div id="formContainer" class="form-container">
         <h2>Create an Account</h2>
-        <form>
-            <input type="text" placeholder="Username" required>
+        <form onsubmit="event.preventDefault(); login();">
+            <input type="text" id="username" placeholder="Username" required>
             <input type="password" placeholder="Password" required>
             <input type="password" placeholder="Re-enter Password" required>
             <button type="submit">Sign Up</button>
