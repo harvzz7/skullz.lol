@@ -51,7 +51,7 @@
         // Get username from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
-        document.getElementById('usernameDisplay').textContent = username || 'User';
+        document.getElementById('usernameDisplay').textContent = username || 'User'; // Default to 'User' if no username is found
     </script>
 </body>
 </html>
